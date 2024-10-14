@@ -20,7 +20,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] public PlayerType playerType;
 
     [Header("Kicking")]
-    [SerializeField] private bool   canKick;
+    [SerializeField] public bool    canKick;
     [SerializeField] private float  kickSpeed;
 
     private PlayerInput_Red     inputRed;

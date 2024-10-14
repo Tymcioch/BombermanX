@@ -32,7 +32,8 @@ public class Bomb : MonoBehaviour
 
     private void Update()
     {
-        if(!isExploding && isKicked) KickBomb(kickDirection, kickSpeed);
+        //Debug.Log(isExploding + " " + isKicked);
+        if (!isExploding && isKicked) KickBomb(kickDirection, kickSpeed);
 
     }
 
@@ -66,11 +67,14 @@ public class Bomb : MonoBehaviour
     {
         yield return new WaitForSeconds(ignitTime);
 
+
         //Debug.Log("Bomb Exploding");
-        isExploding = true;
+        bombTemp.transform.position = new Vector2((float)Math.Round(transform.position.x, 0),
+                                                  (float)Math.Round(transform.position.y, 0));
         bombTemp.GetComponent<CircleCollider2D>().enabled = false;
         bombTemp.GetComponent<SpriteRenderer>().enabled = false;
         bombTemp.transform.Find("Explosion").gameObject.SetActive(true);
+        isExploding = true;
         SetExplosionEffect();
 
         yield return new WaitForSeconds(explodeTime);
@@ -191,6 +195,13 @@ public class Bomb : MonoBehaviour
     public void KickBomb(Vector2 moveDirection, float kickSpeed)
     {
         rb2D.MovePosition(rb2D.position + (moveDirection * kickSpeed));
+    }
+
+
+    private void OnCollisionEnter2D(Collision2D other)
+    {
+        if (other.gameObject.layer != LayerMask.NameToLayer("Player"))
+            isKicked = false;
     }
 
 
