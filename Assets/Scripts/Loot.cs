@@ -17,6 +17,7 @@ public class Loot : MonoBehaviour
     private PlayerMovement player;
 
     private SpriteRenderer itemSprite;
+    private AudioSource collectSound;
     private string itemID;
 
     private float totalChance = 0f;
@@ -26,6 +27,7 @@ public class Loot : MonoBehaviour
     private void Awake()
     {
         itemSprite = GetComponent<SpriteRenderer>();
+        collectSound = GetComponent<AudioSource>();
         SetLoot();
     }
 
@@ -71,9 +73,24 @@ public class Loot : MonoBehaviour
 
 
             case ("Bomb1"):
-                player.bombsQuantity += 1;
+                player.bombsCapacity++;
+                player.bombsQuantity++;
                 break;
 
+
+            case ("KickBomb"):
+                player.canKick = true;
+                break;
+
+
+            case ("Detonator"):
+                player.detonatorsQuantity = player.bombsCapacity;
+                break;
+
+
+            case ("Shield"):
+                player.EnableShield();
+                break;
         }
 
     }
@@ -86,8 +103,12 @@ public class Loot : MonoBehaviour
         if (other.gameObject.layer == LayerMask.NameToLayer("Player"))
         {
             player = other.gameObject.GetComponent<PlayerMovement>();
+            collectSound.Play();
             LootEffect();
-            Destroy(gameObject);
+            itemSprite.enabled = false;
+
+            Invoke("DestroyObject", 3f);
+
         }
 
         else if (other.gameObject.layer == LayerMask.NameToLayer("Explosion"))
@@ -97,6 +118,10 @@ public class Loot : MonoBehaviour
         
     }
 
+    private void DestroyObject()
+    {
+        Destroy(gameObject);
+    }
 
 
     [Serializable]

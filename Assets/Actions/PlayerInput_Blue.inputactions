@@ -1,5 +1,5 @@
 {
-    "name": "PlayerInput_Red",
+    "name": "PlayerInput_Blue",
     "maps": [
         {
             "name": "Movement",
@@ -96,6 +96,34 @@
                     "processors": "",
                     "groups": "",
                     "action": "PlaceBomb",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "DetonateBomb",
+            "id": "90080a5b-83de-4be6-ae81-da3064119cb1",
+            "actions": [
+                {
+                    "name": "DetonateBomb",
+                    "type": "Button",
+                    "id": "89a77079-0b6d-4b4e-8571-74a1ae3f1936",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "571d6faa-be3f-45e0-860b-90b2592882f4",
+                    "path": "<Keyboard>/rightShift",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "DetonateBomb",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

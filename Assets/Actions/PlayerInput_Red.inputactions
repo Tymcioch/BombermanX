@@ -100,6 +100,34 @@
                     "isPartOfComposite": false
                 }
             ]
+        },
+        {
+            "name": "DetonateBomb",
+            "id": "35362f33-b842-4c71-9b36-512c8d832495",
+            "actions": [
+                {
+                    "name": "DetonateBomb",
+                    "type": "Button",
+                    "id": "23ade635-51c2-49af-8990-14f56679780e",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "fe17702d-077e-446d-81e1-4cbbadd7f0a8",
+                    "path": "<Keyboard>/leftAlt",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "DetonateBomb",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
         }
     ],
     "controlSchemes": []

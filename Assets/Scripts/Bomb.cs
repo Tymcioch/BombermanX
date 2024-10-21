@@ -7,12 +7,12 @@ using UnityEngine.Tilemaps;
 public class Bomb : MonoBehaviour
 {
     [Header("Bomb Parameters")]
-    [SerializeField] private float ignitTime;
     [SerializeField] private float explodeTime;
     [SerializeField] private GameObject tileExplosionPrefarb;
     [SerializeField] private GameObject lootPrefarb;
 
     private int range;
+    private float ignitTime;
 
     private Tilemap destructible;
     private Tilemap solid;
@@ -21,6 +21,7 @@ public class Bomb : MonoBehaviour
     private Coroutine myCoroutine;
     private PlayerMovement player;
 
+    //zmienne kopania
     private bool isExploding    = false;
     private bool isKicked       = false;
     private Vector2 kickDirection;
@@ -32,14 +33,15 @@ public class Bomb : MonoBehaviour
 
     private void Update()
     {
-        if(!isExploding && isKicked) KickBomb(kickDirection, kickSpeed);
-
+        //Debug.Log(isExploding + " " + isKicked);
+        if (!isExploding && isKicked) KickBomb(kickDirection, kickSpeed);
     }
 
 
 
-    public void Boom(int myRange, PlayerMovement playerMovement, GameObject bombInstance, GameObject myTilemap)
+    public void Boom(int myRange, float timeToIgnit, PlayerMovement playerMovement, GameObject bombInstance, GameObject myTilemap)
     {
+        ignitTime = timeToIgnit;
         range = myRange;
         bombTemp = bombInstance;
         destructible = myTilemap.transform.Find("Destructible").GetComponent<Tilemap>();
@@ -66,11 +68,14 @@ public class Bomb : MonoBehaviour
     {
         yield return new WaitForSeconds(ignitTime);
 
+
         //Debug.Log("Bomb Exploding");
-        isExploding = true;
+        bombTemp.transform.position = new Vector2((float)Math.Round(transform.position.x, 0),
+                                                  (float)Math.Round(transform.position.y, 0));
         bombTemp.GetComponent<CircleCollider2D>().enabled = false;
         bombTemp.GetComponent<SpriteRenderer>().enabled = false;
         bombTemp.transform.Find("Explosion").gameObject.SetActive(true);
+        isExploding = true;
         SetExplosionEffect();
 
         yield return new WaitForSeconds(explodeTime);
@@ -191,6 +196,13 @@ public class Bomb : MonoBehaviour
     public void KickBomb(Vector2 moveDirection, float kickSpeed)
     {
         rb2D.MovePosition(rb2D.position + (moveDirection * kickSpeed));
+    }
+
+
+    private void OnCollisionEnter2D(Collision2D other)
+    {
+        if (other.gameObject.layer != LayerMask.NameToLayer("Player"))
+            isKicked = false;
     }
 
 

@@ -122,6 +122,34 @@ public partial class @PlayerInput_Blue: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""DetonateBomb"",
+            ""id"": ""90080a5b-83de-4be6-ae81-da3064119cb1"",
+            ""actions"": [
+                {
+                    ""name"": ""DetonateBomb"",
+                    ""type"": ""Button"",
+                    ""id"": ""89a77079-0b6d-4b4e-8571-74a1ae3f1936"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""571d6faa-be3f-45e0-860b-90b2592882f4"",
+                    ""path"": ""<Keyboard>/rightShift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""DetonateBomb"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": []
@@ -132,6 +160,9 @@ public partial class @PlayerInput_Blue: IInputActionCollection2, IDisposable
         // PlaceBomb
         m_PlaceBomb = asset.FindActionMap("PlaceBomb", throwIfNotFound: true);
         m_PlaceBomb_PlaceBomb = m_PlaceBomb.FindAction("PlaceBomb", throwIfNotFound: true);
+        // DetonateBomb
+        m_DetonateBomb = asset.FindActionMap("DetonateBomb", throwIfNotFound: true);
+        m_DetonateBomb_DetonateBomb = m_DetonateBomb.FindAction("DetonateBomb", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -281,6 +312,52 @@ public partial class @PlayerInput_Blue: IInputActionCollection2, IDisposable
         }
     }
     public PlaceBombActions @PlaceBomb => new PlaceBombActions(this);
+
+    // DetonateBomb
+    private readonly InputActionMap m_DetonateBomb;
+    private List<IDetonateBombActions> m_DetonateBombActionsCallbackInterfaces = new List<IDetonateBombActions>();
+    private readonly InputAction m_DetonateBomb_DetonateBomb;
+    public struct DetonateBombActions
+    {
+        private @PlayerInput_Blue m_Wrapper;
+        public DetonateBombActions(@PlayerInput_Blue wrapper) { m_Wrapper = wrapper; }
+        public InputAction @DetonateBomb => m_Wrapper.m_DetonateBomb_DetonateBomb;
+        public InputActionMap Get() { return m_Wrapper.m_DetonateBomb; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(DetonateBombActions set) { return set.Get(); }
+        public void AddCallbacks(IDetonateBombActions instance)
+        {
+            if (instance == null || m_Wrapper.m_DetonateBombActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_DetonateBombActionsCallbackInterfaces.Add(instance);
+            @DetonateBomb.started += instance.OnDetonateBomb;
+            @DetonateBomb.performed += instance.OnDetonateBomb;
+            @DetonateBomb.canceled += instance.OnDetonateBomb;
+        }
+
+        private void UnregisterCallbacks(IDetonateBombActions instance)
+        {
+            @DetonateBomb.started -= instance.OnDetonateBomb;
+            @DetonateBomb.performed -= instance.OnDetonateBomb;
+            @DetonateBomb.canceled -= instance.OnDetonateBomb;
+        }
+
+        public void RemoveCallbacks(IDetonateBombActions instance)
+        {
+            if (m_Wrapper.m_DetonateBombActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        public void SetCallbacks(IDetonateBombActions instance)
+        {
+            foreach (var item in m_Wrapper.m_DetonateBombActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_DetonateBombActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    public DetonateBombActions @DetonateBomb => new DetonateBombActions(this);
     public interface IMovementActions
     {
         void OnMove(InputAction.CallbackContext context);
@@ -288,5 +365,9 @@ public partial class @PlayerInput_Blue: IInputActionCollection2, IDisposable
     public interface IPlaceBombActions
     {
         void OnPlaceBomb(InputAction.CallbackContext context);
+    }
+    public interface IDetonateBombActions
+    {
+        void OnDetonateBomb(InputAction.CallbackContext context);
     }
 }
