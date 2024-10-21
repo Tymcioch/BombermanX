@@ -7,24 +7,34 @@ using UnityEngine.Tilemaps;
 public class PlayerMovement : MonoBehaviour
 {
     [Header("Config")]
-
     [SerializeField] public float       speed;
     [SerializeField] public int         range;
-    [SerializeField] public int         bombsQuantity = 1;
     [SerializeField] public GameObject  player;
     [SerializeField] public GameObject  tilemap;
 
+    [Header("Bomb Settings")]
     [SerializeField] public GameObject bombPrefarb;
+    [SerializeField] public GameObject detonatorPrefarb;
+    [SerializeField] private float ignitTime;
+    [SerializeField] public int bombsCapacity;
+    [SerializeField] public int bombsQuantity;
+    [SerializeField] public int detonatorsQuantity = 3;
+    private Queue<GameObject> bombQueue = new Queue<GameObject>();
+
 
     public enum PlayerType { Red, Blue }
     [SerializeField] public PlayerType playerType;
+    private PlayerInput_Red inputRed;
+    private PlayerInput_Blue inputBlue;
 
-    [Header("Kicking")]
+    [Header("Buffs")]
     [SerializeField] public bool    canKick;
     [SerializeField] private float  kickSpeed;
+    [SerializeField] public bool    shieldEnabled;
+    [SerializeField] public float   shieldDuration;
+    private GameObject shield;
 
-    private PlayerInput_Red     inputRed;
-    private PlayerInput_Blue    inputBlue;
+
 
     private Rigidbody2D         rb2D;
     private Vector2             moveDirection;
@@ -42,6 +52,9 @@ public class PlayerMovement : MonoBehaviour
         rb2D            = GetComponent<Rigidbody2D>();
         animator        = GetComponent<Animator>();
         bombPlaceSound  = GetComponent<AudioSource>();
+        shield          = transform.Find("Shield").gameObject;
+
+        bombsQuantity = bombsCapacity;
 
         // Inicjalizacja wejœcia w zale¿noœci od gracza
         if      (playerType == PlayerType.Red)  inputRed  = new PlayerInput_Red();
@@ -63,6 +76,19 @@ public class PlayerMovement : MonoBehaviour
         else if (playerType == PlayerType.Blue && inputBlue.PlaceBomb.PlaceBomb.WasPerformedThisFrame())
         {
             PlaceBomb();
+        }
+
+
+        //detonacja
+        if (playerType == PlayerType.Red && inputRed.DetonateBomb.DetonateBomb.WasPerformedThisFrame())
+        {
+            Debug.Log("Detonating");
+            ExplodeDetonator();
+        }
+        else if (playerType == PlayerType.Blue && inputBlue.DetonateBomb.DetonateBomb.WasPerformedThisFrame())
+        {
+            Debug.Log("Detonating");
+            ExplodeDetonator();
         }
     }
 
@@ -106,7 +132,38 @@ public class PlayerMovement : MonoBehaviour
 
 
 
+    public void Death(AudioSource deathSound)
+    {
+        if (shieldEnabled)
+        {
+            shieldEnabled = false;
+            shield.SetActive(false);
+            return;
+        }
 
+        deathSound.Play();
+        Destroy(gameObject);
+    }
+
+
+
+    public void EnableShield()
+    {
+        StartCoroutine(ShieldCoroutine());
+    }
+    public IEnumerator ShieldCoroutine()
+    {
+        shieldEnabled = true;
+        shield.SetActive(true);
+
+        yield return new WaitForSeconds(shieldDuration);
+
+        shieldEnabled = false;
+        shield.SetActive(false);
+    }
+
+
+    //obs³uga bomb
     private void PlaceBomb()
     {
         if (bombsQuantity <= 0) return;
@@ -114,16 +171,40 @@ public class PlayerMovement : MonoBehaviour
         bombsQuantity--;
         bombPlaceSound.Play();
         //sprawdziæ, czy nie ma tu ju¿ bomby!
-        GameObject bombTemp = Instantiate(bombPrefarb, new Vector2((float)Math.Round(player.transform.position.x, 0),
-                                                                   (float)Math.Round(player.transform.position.y, 0)),
-                                                                   Quaternion.identity);
 
 
-        bomb = bombTemp.GetComponent<Bomb>();
-        bomb.Boom(range, this, bombTemp, tilemap);
+        if (detonatorsQuantity > 0) PlaceDetonator();
+
+        else
+        {
+            GameObject bombTemp = Instantiate(bombPrefarb, new Vector2((float)Math.Round(player.transform.position.x, 0),
+                                                                       (float)Math.Round(player.transform.position.y, 0)),
+                                                                        Quaternion.identity);
+            bomb = bombTemp.GetComponent<Bomb>();
+            bomb.Boom(range, ignitTime, this, bombTemp, tilemap);
+        }
     }
 
 
+    private void PlaceDetonator()
+    {
+        detonatorsQuantity--;
+
+        GameObject bombTemp = Instantiate(detonatorPrefarb, new Vector2((float)Math.Round(player.transform.position.x, 0),
+                                                                        (float)Math.Round(player.transform.position.y, 0)),
+                                                                        Quaternion.identity);
+        bomb = bombTemp.GetComponent<Bomb>();
+        bombQueue.Enqueue(bombTemp);
+    }
+
+
+    private void ExplodeDetonator()
+    {
+        GameObject bombTemp = bombQueue.Dequeue();
+        bomb = bombTemp.GetComponent<Bomb>();
+        bomb.Boom(range, ignitTime, this, bombTemp, tilemap);
+        bomb.InstantExplosion();
+    }
 
 
     // kopanie bomb
@@ -140,16 +221,23 @@ public class PlayerMovement : MonoBehaviour
 
 
 
+
     private void OnEnable()
     {
+
+
         if (playerType == PlayerType.Red)
         {
             inputRed.Enable();
+
         }
         else if (playerType == PlayerType.Blue)
         {
             inputBlue.Enable();
         }
+
+        //input.PlaceBomb.PlaceBomb.performed += ctx => PlaceBomb();
+        //input.ExplodeBomb.ExplodeBomb.performed += ctx => ExplodeNextBomb();
     }
 
 

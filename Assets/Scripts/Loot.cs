@@ -73,7 +73,8 @@ public class Loot : MonoBehaviour
 
 
             case ("Bomb1"):
-                player.bombsQuantity += 1;
+                player.bombsCapacity++;
+                player.bombsQuantity++;
                 break;
 
 
@@ -81,6 +82,15 @@ public class Loot : MonoBehaviour
                 player.canKick = true;
                 break;
 
+
+            case ("Detonator"):
+                player.detonatorsQuantity = player.bombsCapacity;
+                break;
+
+
+            case ("Shield"):
+                player.EnableShield();
+                break;
         }
 
     }
