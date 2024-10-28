@@ -7,14 +7,10 @@ using Random = UnityEngine.Random;
 
 public class Loot : MonoBehaviour
 {
-    [Header("Effects Config")]
-    [SerializeField] private float speedEffect;
-    [SerializeField] private float maxSpeed;
-
     [Header("Items")]
     [SerializeField] private DropItem[] dropItems;
 
-    private PlayerMovement player;
+    private PlayerManager player;
 
     private SpriteRenderer itemSprite;
     private AudioSource collectSound;
@@ -57,55 +53,19 @@ public class Loot : MonoBehaviour
     }
 
 
-    private void LootEffect()
-    {
-        switch (itemID)
-        {
-            case ("Speed1"):
-                if (player.speed >= maxSpeed) return;
-                player.speed += speedEffect;
-                break;
 
-
-            case ("Range1"):
-                player.range += 1;
-                break;
-
-
-            case ("Bomb1"):
-                player.bombsCapacity++;
-                player.bombsQuantity++;
-                break;
-
-
-            case ("KickBomb"):
-                player.canKick = true;
-                break;
-
-
-            case ("Detonator"):
-                player.detonatorsQuantity = player.bombsCapacity;
-                break;
-
-
-            case ("Shield"):
-                player.EnableShield();
-                break;
-        }
-
-    }
-
-        
 
     private void OnTriggerEnter2D(Collider2D other)
     {
 
         if (other.gameObject.layer == LayerMask.NameToLayer("Player"))
         {
-            player = other.gameObject.GetComponent<PlayerMovement>();
+            player = other.gameObject.GetComponent<PlayerManager>();
             collectSound.Play();
-            LootEffect();
+            player.LootEffect(itemID);
+
             itemSprite.enabled = false;
+            GetComponent<Collider2D>().enabled = false;
 
             Invoke("DestroyObject", 3f);
 
