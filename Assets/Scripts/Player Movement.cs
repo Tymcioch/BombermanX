@@ -7,31 +7,39 @@ using UnityEngine.Tilemaps;
 public class PlayerMovement : MonoBehaviour
 {
     [Header("Config")]
+    [SerializeField] public float speed;
+    [SerializeField] public int range;
+    [SerializeField] public GameObject player;
+    [SerializeField] public GameObject tilemap;
 
-    [SerializeField] public float       speed;
-    [SerializeField] public int         range;
-    [SerializeField] public int         bombsQuantity = 1;
-    [SerializeField] public GameObject  player;
-    [SerializeField] public GameObject  tilemap;
-
+    [Header("Bomb Settings")]
     [SerializeField] public GameObject bombPrefarb;
+    [SerializeField] public GameObject detonatorPrefarb;
+    [SerializeField] private float ignitTime;
+    [SerializeField] public int bombsCapacity;
+    [SerializeField] public int bombsQuantity;
+    [SerializeField] public int detonatorsQuantity = 3;
+    private Queue<GameObject> bombQueue = new Queue<GameObject>();
+
 
     public enum PlayerType { Red, Blue }
     [SerializeField] public PlayerType playerType;
+    private PlayerInput_Red inputRed;
+    private PlayerInput_Blue inputBlue;
 
-    [Header("Kicking")]
-    [SerializeField] private bool   canKick;
-    [SerializeField] private float  kickSpeed;
+    [Header("Buffs")]
+    [SerializeField] public bool canKick;
+    [SerializeField] private float kickSpeed;
+    [SerializeField] public bool shieldEnabled;
 
-    private PlayerInput_Red     inputRed;
-    private PlayerInput_Blue    inputBlue;
 
-    private Rigidbody2D         rb2D;
-    private Vector2             moveDirection;
-    private Animator            animator;
-    private AudioSource         bombPlaceSound;
 
-    private Bomb    bomb;
+    private Rigidbody2D rb2D;
+    private Vector2 moveDirection;
+    private Animator animator;
+    private AudioSource bombPlaceSound;
+
+    private Bomb bomb;
 
 
 
@@ -39,36 +47,54 @@ public class PlayerMovement : MonoBehaviour
 
     private void Awake()
     {
-        rb2D            = GetComponent<Rigidbody2D>();
-        animator        = GetComponent<Animator>();
-        bombPlaceSound  = GetComponent<AudioSource>();
+        rb2D = GetComponent<Rigidbody2D>();
+        animator = GetComponent<Animator>();
+        bombPlaceSound = GetComponent<AudioSource>();
+
+        bombsQuantity = bombsCapacity;
 
         // Inicjalizacja wejœcia w zale¿noœci od gracza
-        if      (playerType == PlayerType.Red)  inputRed  = new PlayerInput_Red();
+        if (playerType == PlayerType.Red) inputRed = new PlayerInput_Red();
         else if (playerType == PlayerType.Blue) inputBlue = new PlayerInput_Blue();
     }
 
 
 
-
+    public bool diarrhea = false;
+    public bool constipation = false;
     private void Update()
     {
         Move();
 
         // Obs³uga stawiania bomb na podstawie typu gracza
-        if (playerType == PlayerType.Red && inputRed.PlaceBomb.PlaceBomb.WasPerformedThisFrame())
+        if (playerType == PlayerType.Red && inputRed.PlaceBomb.PlaceBomb.WasPerformedThisFrame() || diarrhea)
         {
+            if (!constipation)
             PlaceBomb();
         }
-        else if (playerType == PlayerType.Blue && inputBlue.PlaceBomb.PlaceBomb.WasPerformedThisFrame())
+        else if (playerType == PlayerType.Blue && inputBlue.PlaceBomb.PlaceBomb.WasPerformedThisFrame() || diarrhea)
         {
+            if (!constipation)
             PlaceBomb();
+        }
+
+
+        //detonacja
+        if (playerType == PlayerType.Red && inputRed.DetonateBomb.DetonateBomb.WasPerformedThisFrame())
+        {
+            Debug.Log("Detonating");
+            ExplodeDetonator();
+        }
+        else if (playerType == PlayerType.Blue && inputBlue.DetonateBomb.DetonateBomb.WasPerformedThisFrame())
+        {
+            Debug.Log("Detonating");
+            ExplodeDetonator();
         }
     }
 
 
 
-
+    public bool switchControls;
     private void Move()
     {
         if (playerType == PlayerType.Red)
@@ -79,6 +105,10 @@ public class PlayerMovement : MonoBehaviour
         {
             moveDirection = inputBlue.Movement.Move.ReadValue<Vector2>().normalized;
         }
+
+        //Choroba - zmiana klawiszy
+        if (switchControls) moveDirection *= -1;
+        //
 
         rb2D.MovePosition(rb2D.position + (moveDirection * (speed / 100)));
 
@@ -106,24 +136,67 @@ public class PlayerMovement : MonoBehaviour
 
 
 
+    public void Death(AudioSource deathSound)
+    {
+        if (shieldEnabled)
+        {
+            GetComponent<PlayerManager>().DisableShield();
+            return;
+        }
 
+        deathSound.Play();
+        Destroy(gameObject);
+    }
+
+
+
+
+    //obs³uga bomb
     private void PlaceBomb()
     {
+        Collider2D hit = Physics2D.OverlapCircle(new Vector2((float)Math.Round(player.transform.position.x, 0),
+                                                             (float)Math.Round(player.transform.position.y, 0)),0.1f);
+
+        if (hit.CompareTag("Bomb")) return;
         if (bombsQuantity <= 0) return;
 
         bombsQuantity--;
         bombPlaceSound.Play();
-        //sprawdziæ, czy nie ma tu ju¿ bomby!
-        GameObject bombTemp = Instantiate(bombPrefarb, new Vector2((float)Math.Round(player.transform.position.x, 0),
-                                                                   (float)Math.Round(player.transform.position.y, 0)),
-                                                                   Quaternion.identity);
 
 
-        bomb = bombTemp.GetComponent<Bomb>();
-        bomb.Boom(range, this, bombTemp, tilemap);
+        if (detonatorsQuantity > 0) PlaceDetonator();
+
+        else
+        {
+            GameObject bombTemp = Instantiate(bombPrefarb, new Vector2((float)Math.Round(player.transform.position.x, 0),
+                                                                       (float)Math.Round(player.transform.position.y, 0)),
+                                                                        Quaternion.identity);
+            bomb = bombTemp.GetComponent<Bomb>();
+            bomb.Boom(range, ignitTime, this, bombTemp, tilemap);
+        }
     }
 
 
+    private void PlaceDetonator()
+    {
+        detonatorsQuantity--;
+
+        GameObject bombTemp = Instantiate(detonatorPrefarb, new Vector2((float)Math.Round(player.transform.position.x, 0),
+                                                                        (float)Math.Round(player.transform.position.y, 0)),
+                                                                        Quaternion.identity);
+        bomb = bombTemp.GetComponent<Bomb>();
+        bomb.Boom(range, 10000f, this, bombTemp, tilemap);
+        bombQueue.Enqueue(bombTemp);
+    }
+
+
+    private void ExplodeDetonator()
+    {
+        GameObject bombTemp = bombQueue.Dequeue();
+        bomb = bombTemp.GetComponent<Bomb>();
+        bomb.Boom(range, ignitTime, this, bombTemp, tilemap);
+        bomb.InstantExplosion();
+    }
 
 
     // kopanie bomb
@@ -140,16 +213,23 @@ public class PlayerMovement : MonoBehaviour
 
 
 
+
     private void OnEnable()
     {
+
+
         if (playerType == PlayerType.Red)
         {
             inputRed.Enable();
+
         }
         else if (playerType == PlayerType.Blue)
         {
             inputBlue.Enable();
         }
+
+        //input.PlaceBomb.PlaceBomb.performed += ctx => PlaceBomb();
+        //input.ExplodeBomb.ExplodeBomb.performed += ctx => ExplodeNextBomb();
     }
 
 

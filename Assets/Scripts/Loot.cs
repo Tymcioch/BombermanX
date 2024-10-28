@@ -7,16 +7,13 @@ using Random = UnityEngine.Random;
 
 public class Loot : MonoBehaviour
 {
-    [Header("Effects Config")]
-    [SerializeField] private float speedEffect;
-    [SerializeField] private float maxSpeed;
-
     [Header("Items")]
     [SerializeField] private DropItem[] dropItems;
 
-    private PlayerMovement player;
+    private PlayerManager player;
 
     private SpriteRenderer itemSprite;
+    private AudioSource collectSound;
     private string itemID;
 
     private float totalChance = 0f;
@@ -26,6 +23,7 @@ public class Loot : MonoBehaviour
     private void Awake()
     {
         itemSprite = GetComponent<SpriteRenderer>();
+        collectSound = GetComponent<AudioSource>();
         SetLoot();
     }
 
@@ -55,39 +53,22 @@ public class Loot : MonoBehaviour
     }
 
 
-    private void LootEffect()
-    {
-        switch (itemID)
-        {
-            case ("Speed1"):
-                if (player.speed >= maxSpeed) return;
-                player.speed += speedEffect;
-                break;
 
-
-            case ("Range1"):
-                player.range += 1;
-                break;
-
-
-            case ("Bomb1"):
-                player.bombsQuantity += 1;
-                break;
-
-        }
-
-    }
-
-        
 
     private void OnTriggerEnter2D(Collider2D other)
     {
 
         if (other.gameObject.layer == LayerMask.NameToLayer("Player"))
         {
-            player = other.gameObject.GetComponent<PlayerMovement>();
-            LootEffect();
-            Destroy(gameObject);
+            player = other.gameObject.GetComponent<PlayerManager>();
+            collectSound.Play();
+            player.LootEffect(itemID);
+
+            itemSprite.enabled = false;
+            GetComponent<Collider2D>().enabled = false;
+
+            Invoke("DestroyObject", 3f);
+
         }
 
         else if (other.gameObject.layer == LayerMask.NameToLayer("Explosion"))
@@ -97,6 +78,10 @@ public class Loot : MonoBehaviour
         
     }
 
+    private void DestroyObject()
+    {
+        Destroy(gameObject);
+    }
 
 
     [Serializable]

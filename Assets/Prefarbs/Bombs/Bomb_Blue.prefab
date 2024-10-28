@@ -842,7 +842,7 @@ GameObject:
   - component: {fileID: 165458350415802074}
   m_Layer: 11
   m_Name: Bomb_Blue
-  m_TagString: Untagged
+  m_TagString: Bomb
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -990,7 +990,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48ecb9d19a4407748893da58ad61b85e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ignitTime: 2.5
   explodeTime: 1
   tileExplosionPrefarb: {fileID: 9138128320722218880, guid: c459ed7814d7592439ac592a9272a640, type: 3}
   lootPrefarb: {fileID: 7640044535531516966, guid: 48d614b9e3a01ad4bbe8e8b790bdc172, type: 3}

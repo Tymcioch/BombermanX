@@ -842,7 +842,7 @@ GameObject:
   - component: {fileID: 1381726742043902883}
   m_Layer: 11
   m_Name: Bomb_Red
-  m_TagString: Untagged
+  m_TagString: Bomb
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -857,7 +857,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.06, y: 1, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7499982144069462949}
@@ -950,7 +950,7 @@ CircleCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_Radius: 0.5
+  m_Radius: 0.48
 --- !u!50 &133555298610926024
 Rigidbody2D:
   serializedVersion: 4
@@ -959,14 +959,14 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9190585273730630297}
-  m_BodyType: 1
+  m_BodyType: 0
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 1
+  m_Mass: 100
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 1
+  m_GravityScale: 0
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -990,7 +990,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48ecb9d19a4407748893da58ad61b85e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ignitTime: 15
   explodeTime: 1
   tileExplosionPrefarb: {fileID: 9138128320722218880, guid: c459ed7814d7592439ac592a9272a640, type: 3}
   lootPrefarb: {fileID: 7640044535531516966, guid: 48d614b9e3a01ad4bbe8e8b790bdc172, type: 3}

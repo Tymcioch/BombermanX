@@ -10,8 +10,9 @@ public class TriggerDetector : MonoBehaviour
         if (other.gameObject.layer == LayerMask.NameToLayer("Player"))
         {
             AudioSource deathSound = GetComponentInParent<AudioSource>();
-            deathSound.Play();
-            Destroy(other.gameObject);
+
+            PlayerMovement player = other.GetComponent<PlayerMovement>();
+            player.Death(deathSound);
         }
 
         if (other.gameObject.layer == LayerMask.NameToLayer("Bomb"))
