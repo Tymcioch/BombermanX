@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 2
   tags:
   - Bomb
+  - Tile
   layers:
   - Default
   - TransparentFX
@@ -53,4 +54,7 @@ TagManager:
     locked: 0
   - name: Player
     uniqueID: 3903764707
+    locked: 0
+  - name: Canvas
+    uniqueID: 1451893921
     locked: 0

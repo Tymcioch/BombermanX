@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using Random = UnityEngine.Random;
+using Unity.VisualScripting;
 
 public class PlayerManager : MonoBehaviour
 {
@@ -68,6 +69,29 @@ public class PlayerManager : MonoBehaviour
 
             case ("Shield"):
                 StartCoroutine(ShieldCoroutine());
+                break;
+
+
+            case ("Swap"):
+                //GameObject[] foundPlayers = GameObject.FindGameObjectsWithTag("Player");
+                List <GameObject> playersToSwap = new List<GameObject>(GameObject.FindGameObjectsWithTag("Player"));
+
+                for (int i = 0; i < playersToSwap.Count; i++)
+                {
+                    if (playersToSwap[i] == player.gameObject) playersToSwap.RemoveAt(i);
+                }
+
+                GameObject radomPlayer = playersToSwap[Random.Range(0, playersToSwap.Count)]; //Random.Range(0, playersToSwap.Count);
+
+                Vector2 tempPosiotion           = player.transform.position;
+                player.transform.position       = radomPlayer.transform.position;
+                radomPlayer.transform.position  = tempPosiotion;
+
+                break;
+
+
+            case ("MegaBomb"):
+                player.hasMegaBomb = true;
                 break;
 
 

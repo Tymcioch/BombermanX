@@ -11,10 +11,12 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] public int range;
     [SerializeField] public GameObject player;
     [SerializeField] public GameObject tilemap;
+    [SerializeField] public GameObject mainCamera;
 
     [Header("Bomb Settings")]
     [SerializeField] public GameObject bombPrefarb;
     [SerializeField] public GameObject detonatorPrefarb;
+    [SerializeField] public GameObject megaBombPrefarb;
     [SerializeField] private float ignitTime;
     [SerializeField] public int bombsCapacity;
     [SerializeField] public int bombsQuantity;
@@ -31,7 +33,10 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] public bool canKick;
     [SerializeField] private float kickSpeed;
     [SerializeField] public bool shieldEnabled;
+    [SerializeField] public bool hasMegaBomb;
 
+    public bool diarrhea = false;
+    public bool constipation = false;
 
 
     private Rigidbody2D rb2D;
@@ -60,8 +65,6 @@ public class PlayerMovement : MonoBehaviour
 
 
 
-    public bool diarrhea = false;
-    public bool constipation = false;
     private void Update()
     {
         Move();
@@ -155,13 +158,27 @@ public class PlayerMovement : MonoBehaviour
     private void PlaceBomb()
     {
         Collider2D hit = Physics2D.OverlapCircle(new Vector2((float)Math.Round(player.transform.position.x, 0),
-                                                             (float)Math.Round(player.transform.position.y, 0)),0.1f);
+                                                             (float)Math.Round(player.transform.position.y, 0)),0.3f);
 
         if (hit.CompareTag("Bomb")) return;
         if (bombsQuantity <= 0) return;
 
-        bombsQuantity--;
         bombPlaceSound.Play();
+
+        if (hasMegaBomb)
+        {
+            GameObject bombTemp = Instantiate(megaBombPrefarb, new Vector2((float)Math.Round(player.transform.position.x, 0),
+                                                                       (float)Math.Round(player.transform.position.y, 0)),
+                                                                        Quaternion.identity);
+
+            bombTemp.GetComponent<MegaBomb>().Boom(bombTemp, tilemap, mainCamera);
+
+            hasMegaBomb = false;
+            return;
+        }
+
+
+        bombsQuantity--;
 
 
         if (detonatorsQuantity > 0) PlaceDetonator();

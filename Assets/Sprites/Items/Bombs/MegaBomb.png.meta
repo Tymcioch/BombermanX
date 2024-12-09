@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 9a61a142e045bcf4b8d596db0c507c78
+guid: eda121bd23aff1142b85236add39e8b3
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 8764682621282867210
-    second: Loot_Flower_0
+      213: 1992571460013848073
+    second: MegaBomb_0
   externalObjects: {}
   serializedVersion: 12
   mipmaps:
@@ -110,7 +110,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Loot_Flower_0
+      name: MegaBomb_0
       rect:
         serializedVersion: 2
         x: 0
@@ -124,8 +124,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: a08da92286862a970800000000000000
-      internalID: 8764682621282867210
+      spriteID: 906f4bf8f2907ab10800000000000000
+      internalID: 1992571460013848073
       vertices: []
       indices: 
       edges: []
@@ -141,7 +141,7 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      Loot_Flower_0: 8764682621282867210
+      MegaBomb_0: 1992571460013848073
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
