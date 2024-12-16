@@ -16,6 +16,7 @@ public class Bomb : MonoBehaviour
 
     private Tilemap destructible;
     private Tilemap solid;
+    private Tilemap frame;
     private GameObject bombTemp;
 
     private Coroutine myCoroutine;
@@ -41,12 +42,14 @@ public class Bomb : MonoBehaviour
 
     public void Boom(int myRange, float timeToIgnit, PlayerMovement playerMovement, GameObject bombInstance, GameObject myTilemap)
     {
-        ignitTime = timeToIgnit;
-        range = myRange;
-        bombTemp = bombInstance;
-        destructible = myTilemap.transform.Find("Destructible").GetComponent<Tilemap>();
-        solid = myTilemap.transform.Find("Solid").GetComponent<Tilemap>();
-        player = playerMovement;
+        ignitTime   = timeToIgnit;
+        range       = myRange;
+        bombTemp    = bombInstance;
+        player      = playerMovement;
+
+        destructible    = myTilemap.transform.Find("Destructible").GetComponent<Tilemap>();
+        solid           = myTilemap.transform.Find("Solid").GetComponent<Tilemap>();
+        frame           = myTilemap.transform.Find("Frame").GetComponent<Tilemap>();
 
         myCoroutine = StartCoroutine(Explosion());
     }
@@ -109,7 +112,8 @@ public class Bomb : MonoBehaviour
             //range up
             if (rangeUp == null)
             {
-                if (solid.HasTile(new Vector3Int(bombPos.x, bombPos.y + i))) rangeUp = i - 1;
+                if (solid.HasTile(new Vector3Int(bombPos.x, bombPos.y + i))
+                  ||frame.HasTile(new Vector3Int(bombPos.x, bombPos.y + i))) rangeUp = i - 1;
 
                 else if (destructible.HasTile(new Vector3Int(bombPos.x, bombPos.y + i)))
                 {
@@ -124,7 +128,8 @@ public class Bomb : MonoBehaviour
             //range right
             if (rangeRight == null)
             {
-                if (solid.HasTile(new Vector3Int(bombPos.x + i, bombPos.y))) rangeRight = i - 1;
+                if (solid.HasTile(new Vector3Int(bombPos.x + i, bombPos.y))
+                  ||frame.HasTile(new Vector3Int(bombPos.x + i, bombPos.y))) rangeRight = i - 1;
 
                 else if (destructible.HasTile(new Vector3Int(bombPos.x + i, bombPos.y)))
                 {
@@ -139,7 +144,8 @@ public class Bomb : MonoBehaviour
             //range down
             if (rangeDown == null)
             {
-                if (solid.HasTile(new Vector3Int(bombPos.x, bombPos.y - i))) rangeDown = i - 1;
+                if (solid.HasTile(new Vector3Int(bombPos.x, bombPos.y - i))
+                  ||frame.HasTile(new Vector3Int(bombPos.x, bombPos.y - i))) rangeDown = i - 1;
 
                 else if (destructible.HasTile(new Vector3Int(bombPos.x, bombPos.y - i)))
                 {
@@ -154,7 +160,8 @@ public class Bomb : MonoBehaviour
             //range left
             if (rangeLeft == null)
             {
-                if (solid.HasTile(new Vector3Int(bombPos.x - i, bombPos.y))) rangeLeft = i - 1;
+                if (solid.HasTile(new Vector3Int(bombPos.x - i, bombPos.y))
+                  ||frame.HasTile(new Vector3Int(bombPos.x - i, bombPos.y))) rangeLeft = i - 1;
 
                 else if (destructible.HasTile(new Vector3Int(bombPos.x - i, bombPos.y)))
                 {

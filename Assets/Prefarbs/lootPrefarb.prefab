@@ -131,7 +131,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 0.5, y: 0.5}
+  m_Size: {x: 0.1, y: 0.1}
   m_EdgeRadius: 0
 --- !u!114 &8390332583273292998
 MonoBehaviour:
@@ -203,6 +203,42 @@ MonoBehaviour:
     minItemChance: 0
     maxItemChance: 0
     description: Player gets ill. Effect are fun/frustating.
+  - name: Swap
+    icon: {fileID: 21300000, guid: 151dc01d60cf73a45beab74cf4bf440c, type: 3}
+    dropChance: 5
+    ID: Swap
+    minItemChance: 0
+    maxItemChance: 0
+    description: Switch places with other player. Good for some traps.
+  - name: Mega Bomb
+    icon: {fileID: 21300000, guid: f0c61aa5f59870c46891649ab1e17350, type: 3}
+    dropChance: 3
+    ID: MegaBomb
+    minItemChance: 0
+    maxItemChance: 0
+    description: Give player one use of mega bomb. It destroys quarter of map and
+      solid blocks too.
+  - name: Flower
+    icon: {fileID: 21300000, guid: 9a61a142e045bcf4b8d596db0c507c78, type: 3}
+    dropChance: 1
+    ID: Flower
+    minItemChance: 0
+    maxItemChance: 0
+    description: What a nice look!
+  - name: Max Range
+    icon: {fileID: 21300000, guid: 7a879351aa15d38488bf420d83f94b0b, type: 3}
+    dropChance: 5
+    ID: RangeMax
+    minItemChance: 0
+    maxItemChance: 0
+    description: Flame is out of bounds!
+  - name: Heavy Disease
+    icon: {fileID: 21300000, guid: 7a879351aa15d38488bf420d83f94b0b, type: 3}
+    dropChance: 5
+    ID: DiseaseMax
+    minItemChance: 0
+    maxItemChance: 0
+    description: Player gets multiple diseases at once.
 --- !u!82 &6286757773172562174
 AudioSource:
   m_ObjectHideFlags: 0

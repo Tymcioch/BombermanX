@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 9a61a142e045bcf4b8d596db0c507c78
+guid: 6049febd320a695449696b510b4bb3a2
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 8764682621282867210
-    second: Loot_Flower_0
+      213: 3443481888489672764
+    second: Bomb_Mushroom_0
   externalObjects: {}
   serializedVersion: 12
   mipmaps:
@@ -110,13 +110,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Loot_Flower_0
+      name: Bomb_Mushroom_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 16
-        height: 16
+        width: 42
+        height: 47
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -124,8 +124,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: a08da92286862a970800000000000000
-      internalID: 8764682621282867210
+      spriteID: c301be18884b9cf20800000000000000
+      internalID: 3443481888489672764
       vertices: []
       indices: 
       edges: []
@@ -141,7 +141,7 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      Loot_Flower_0: 8764682621282867210
+      Bomb_Mushroom_0: 3443481888489672764
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
