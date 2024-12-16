@@ -13,6 +13,9 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] public GameObject tilemap;
     [SerializeField] public GameObject mainCamera;
 
+    public bool canTeleport;
+    public int  tpInex = 0;
+
     [Header("Bomb Settings")]
     [SerializeField] public GameObject bombPrefarb;
     [SerializeField] public GameObject detonatorPrefarb;
@@ -33,6 +36,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] public bool canKick;
     [SerializeField] private float kickSpeed;
     [SerializeField] public bool shieldEnabled;
+    [SerializeField] public bool flowerEnabled;
     [SerializeField] public bool hasMegaBomb;
 
     public bool diarrhea = false;
@@ -45,16 +49,17 @@ public class PlayerMovement : MonoBehaviour
     private AudioSource bombPlaceSound;
 
     private Bomb bomb;
-
+    private Flower flower;
 
 
 
 
     private void Awake()
     {
-        rb2D = GetComponent<Rigidbody2D>();
-        animator = GetComponent<Animator>();
-        bombPlaceSound = GetComponent<AudioSource>();
+        rb2D            = GetComponent<Rigidbody2D>();
+        animator        = GetComponent<Animator>();
+        bombPlaceSound  = GetComponent<AudioSource>();
+        flower          = transform.Find("Flower").GetComponent<Flower>();
 
         bombsQuantity = bombsCapacity;
 
@@ -116,6 +121,7 @@ public class PlayerMovement : MonoBehaviour
         rb2D.MovePosition(rb2D.position + (moveDirection * (speed / 100)));
 
         SetAnimation(moveDirection);
+        if (flowerEnabled) flower.SetAnimation(moveDirection);
     }
 
 
