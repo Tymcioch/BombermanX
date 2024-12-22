@@ -4,10 +4,9 @@ using UnityEngine;
 
 public class Teleport : MonoBehaviour
 {
-    TeleportManager tManager;
-    PlayerMovement player;
+    private TeleportManager tManager;
+    private PlayerMovement player;
 
-    private int exitIndex = 0;
 
     private void Awake()
     {
@@ -28,22 +27,22 @@ public class Teleport : MonoBehaviour
     }
 
 
-    private void OnTriggerExit2D(Collider2D collision)
-    {
-        if (collision.CompareTag("Player"))
-        {
-            player = collision.gameObject.GetComponent<PlayerMovement>();
+    //private void OnTriggerExit2D(Collider2D collision)
+    //{
+    //    if (collision.CompareTag("Player"))
+    //    {
+    //        player = collision.gameObject.GetComponent<PlayerMovement>();
 
-            if (player.tpInex == 0)
-            {
-                player.tpInex++;
-                return;
-            }
+    //        if (player.tpInex == 0)
+    //        {
+    //            player.tpInex++;
+    //            return;
+    //        }
 
-            player.canTeleport = true;
-            player.tpInex = 0;
-        }
-    }
+    //        player.canTeleport = true;
+    //        player.tpInex = 0;
+    //    }
+    //}
 
 
 }
