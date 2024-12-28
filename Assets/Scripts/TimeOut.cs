@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using UnityEngine.SceneManagement;
 
 public class TimeOut : MonoBehaviour
 {
@@ -17,6 +18,48 @@ public class TimeOut : MonoBehaviour
         Debug.Log(frame.cellBounds.size.x);
         StartCoroutine(Disaster());
     }
+
+
+    private void Update()
+    {
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+
+        if (Input.GetKey(KeyCode.Escape))
+        {
+            Debug.Log("Pause");
+            SceneManager.LoadScene("Pause");
+        }
+
+
+        if (players.Length <= 1)
+        {
+            StartCoroutine(Pause());
+        }
+
+
+    }
+
+
+    IEnumerator Pause()
+    {
+        yield return new WaitForSeconds(1);
+
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+
+        if (players.Length == 1)
+        {
+            Debug.Log("Win");
+
+        }
+
+        if (players.Length <= 0)
+        {
+            Debug.Log("Tie");
+        }
+
+        SceneManager.LoadScene("Pause");
+    }
+
 
     IEnumerator Disaster()
     {
